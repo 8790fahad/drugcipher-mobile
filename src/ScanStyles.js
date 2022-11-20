@@ -1,11 +1,27 @@
-import {Dimensions} from 'react-native';
+import {Dimensions, StatusBar} from 'react-native';
 const deviceWidth = Dimensions.get('screen').width;
 const deviceHeight = Dimensions.get('screen').height;
 const styles = {
+  container: {
+    flex: 1,
+    // paddingTop: StatusBar.currentHeight,
+  },
+  scrollView: {
+    // backgroundColor: 'pink',
+    // marginHorizontal: 20,
+  },
+  text: {
+    fontSize: 42,
+  },
   scrollViewStyle: {
     flex: 1,
     justifyContent: 'flex-start',
     backgroundColor: '#03426e',
+  },
+  img: {
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingBottom: 10,
   },
   header: {
     display: 'flex',
@@ -20,15 +36,40 @@ const styles = {
     fontWeight: 'bold',
     fontSize: 18,
     textAlign: 'center',
-    padding: 16,
+    padding: 10,
     color: 'white',
   },
   textTitle1: {
     fontWeight: 'bold',
     fontSize: 18,
     textAlign: 'center',
-    padding: 16,
+    // padding: 16,
     color: 'white',
+  },
+  textTitle3: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    textAlign: 'center',
+    paddingTop: 40,
+    color: 'white',
+  },
+  cont: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
+
+  cont1: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 30,
+  },
+  cont2: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
   },
   cardView: {
     width: deviceWidth - 32,
@@ -41,6 +82,31 @@ const styles = {
     marginLeft: 5,
     marginRight: 5,
     marginTop: '10%',
+    backgroundColor: 'white',
+  },
+  cardView2: {
+    width: deviceWidth - 32,
+    height: deviceHeight - 350,
+    alignSelf: 'center',
+    justifyContent: 'flex-start',
+    // alignItems: 'center',
+    borderRadius: 10,
+    padding: 25,
+    marginLeft: 5,
+    marginRight: 5,
+    marginTop: '10%',
+    backgroundColor: 'white',
+  },
+  cardVew3: {
+    width: deviceWidth,
+    height: deviceHeight,
+    alignSelf: 'center',
+    justifyContent: 'flex-start',
+    borderRadius: 10,
+    padding: 10,
+    marginLeft: 50,
+    marginRight: 50,
+    marginTop: '12%',
     backgroundColor: 'white',
   },
   scanCardView: {
@@ -71,11 +137,17 @@ const styles = {
     paddingLeft: 25,
     marginTop: 20,
   },
+  result: {
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#03426e',
+  },
   buttonScan2: {
     marginLeft: deviceWidth / 2 - 50,
     width: 100,
     height: 100,
   },
+  color: {color: '#80D101'},
   descText: {
     padding: 16,
     textAlign: 'center',

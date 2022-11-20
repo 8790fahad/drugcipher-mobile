@@ -5,7 +5,7 @@ import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
 import android.os.Bundle; // here
 import org.devio.rn.splashscreen.SplashScreen; // here
-
+import com.taluttasgiran.ReactNativeCountriesPackage;
 public class MainActivity extends ReactActivity {
 
   /**

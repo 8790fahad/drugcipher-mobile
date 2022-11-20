@@ -1,10 +1,11 @@
 import * as React from 'react';
 import {BottomNavigation, Text} from 'react-native-paper';
+import BookMark from './BookMark';
+import History from './History';
 import Scan from './QrCodeScanner';
 
 const AlbumsRoute = () => <Text>Albums</Text>;
 
-const NotificationsRoute = () => <Text>Notifications</Text>;
 
 const MyComponent = () => {
   const [index, setIndex] = React.useState(0);
@@ -37,8 +38,8 @@ const MyComponent = () => {
 
   const renderScene = BottomNavigation.SceneMap({
     scan: Scan,
-    history: NotificationsRoute,
-    bookmark: AlbumsRoute,
+    history: History,
+    bookmark: BookMark,
     settings: AlbumsRoute,
   });
 
