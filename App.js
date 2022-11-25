@@ -1,10 +1,10 @@
 import React from 'react';
 import SplashScreen from 'react-native-splash-screen';
-import MyComponent from './src/MyComponent';
+import Scan from './src/QrCodeScanner';
 
 export const App = () => {
   React.useEffect(() => {
     SplashScreen.hide();
   });
-  return <MyComponent />;
+  return <Scan />;
 };

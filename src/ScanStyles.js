@@ -10,6 +10,19 @@ const styles = {
     // backgroundColor: 'pink',
     // marginHorizontal: 20,
   },
+  settings: {
+    color: '#03426e',
+    fontWeight: 'bold',
+    fontSize: 22,
+    textAlign: 'center',
+    paddingTop: 40,
+  },
+  settingCard: {
+    boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)',
+    transition: '0.3s',
+    width: '40%',
+    borderRadius: 5,
+  },
   text: {
     fontSize: 42,
   },
@@ -161,7 +174,7 @@ const styles = {
     flex: 1,
     textAlign: 'center',
     fontSize: 18,
-    padding: 32,
+    padding: 20,
     color: 'white',
   },
   textBold: {

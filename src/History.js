@@ -22,10 +22,10 @@ export default function History() {
       },
     );
   }, []);
-  const book = item => {
+  const book = index => {
     _postApi(
       '/v1/bookmark-api',
-      {index: item},
+      {index},
       res => {
         console.log(res);
       },
@@ -51,7 +51,7 @@ export default function History() {
   }, [getScanHistory]);
   return (
     <View style={styles.scrollViewStyle}>
-      <Text style={styles.textTitle3}>DrugCipher</Text>
+      <Text style={styles.textTitle3}>DrugCipher History</Text>
       <View style={styles.cardVew3}>
         <SafeAreaView style={styles.container}>
           <ScrollView style={styles.scrollView}>

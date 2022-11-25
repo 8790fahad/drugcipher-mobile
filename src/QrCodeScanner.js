@@ -8,7 +8,7 @@ import {
   Alert,
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
-import {ActivityIndicator, Button} from 'react-native-paper';
+import {ActivityIndicator, Button, TextInput} from 'react-native-paper';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import styles from './ScanStyles';
 import {RequestManager, HTTPTransport, Client} from '@open-rpc/client-js';
@@ -31,9 +31,81 @@ class Scan extends Component {
       country: '',
       position: {},
       info: false,
+      check: false,
+      email: '',
+      enable: false,
+      load: false,
     };
   }
-
+  submitClaim = () => {
+    this.setState(p => ({...p, load: true}));
+    const {email, drugInfo} = this.state;
+    if (email !== '') {
+      _postApi(
+        '/v1/user-claim',
+        {email, drug_id: drugInfo.id},
+        res => {
+          if (res.success) {
+            this.setState(p => ({
+              scan: false,
+              ScanResult: false,
+              drugInfo: {},
+              grant: false,
+              location: false,
+              isTorchOn: false,
+              country: '',
+              position: {},
+              info: false,
+              check: false,
+              email: '',
+              enable: false,
+              load: false,
+            }));
+            Alert.alert('Email has been sent to you to claim your token');
+          } else {
+            Alert.alert('Check your mail please!');
+            this.setState(p => ({
+              scan: false,
+              ScanResult: false,
+              drugInfo: {},
+              grant: false,
+              location: false,
+              isTorchOn: false,
+              country: '',
+              position: {},
+              info: false,
+              check: false,
+              email: '',
+              enable: false,
+              load: false,
+            }));
+          }
+        },
+        err => {
+          console.log(err);
+          this.setState(p => ({
+            scan: false,
+            ScanResult: false,
+            drugInfo: {},
+            grant: false,
+            location: false,
+            isTorchOn: false,
+            country: '',
+            position: {},
+            info: false,
+            check: false,
+            email: '',
+            enable: false,
+            load: false,
+          }));
+          Alert.alert('Check your mail please');
+        },
+      );
+    } else {
+      Alert.alert('Please put your email');
+      this.setState(p => ({...p, load: false}));
+    }
+  };
   requestLocationPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -116,7 +188,7 @@ class Scan extends Component {
             args_base64: b64Str,
           },
         });
-
+        console.log(result);
         if (result.result) {
           this.setState({
             scan: false,
@@ -125,22 +197,23 @@ class Scan extends Component {
             info: false,
           });
           let data = JSON.parse(String.fromCharCode(...result.result));
-          console.log(data);
-          _postApi(
-            '/v1/get-info',
-            {
-              ...data,
-              ...this.state.position,
-              d_id: await AsyncStorage.getItem('@@drugcipherid'),
-              country: this.state.country,
-            },
-            res => {
-              console.log(res);
-            },
-            err => {
-              console.log(err);
-            },
-          );
+          if (data !== null) {
+            _postApi(
+              '/v1/get-info',
+              {
+                ...data,
+                ...this.state.position,
+                d_id: await AsyncStorage.getItem('@@drugcipherid'),
+                country: this.state.country,
+              },
+              res => {
+                console.log(res);
+              },
+              err => {
+                console.log(err);
+              },
+            );
+          }
         } else {
           this.setState(p => ({
             ...p,
@@ -174,17 +247,13 @@ class Scan extends Component {
   }
 
   render() {
-    const {scan, ScanResult, drugInfo, info} = this.state;
+    const {scan, ScanResult, drugInfo, info, check, email, enable, load} =
+      this.state;
 
     return (
       <View style={styles.scrollViewStyle}>
         <Fragment>
           <View style={styles.header}>
-            {/* <Button
-              onPress={() => BackHandler.exitApp()}
-              icon={{source: 'power', direction: 'rtl'}}
-              textColor="white"
-            /> */}
             <Text style={styles.textTitle}>Drugcipher QR Code</Text>
           </View>
           {!scan && !ScanResult && (
@@ -200,6 +269,7 @@ class Scan extends Component {
                 source={require('../asset/qrcodeimage.png')}
                 style={{margin: 5, height: 150, width: 200}}
               />
+
               <Button
                 icon={{source: 'camera', direction: 'rtl'}}
                 textColor="#03426e"
@@ -230,99 +300,166 @@ class Scan extends Component {
                   </View>
                 ) : (
                   <Fragment>
-                    <View style={styles.img}>
-                      {!drugInfo.status ? (
-                        <Image
-                          source={require('../asset/success-icon-10.png')}
-                          style={{height: 80, width: 80, color: '#03426e'}}
-                        />
-                      ) : (
-                        <Image
-                          source={require('../asset/error-icon.png')}
-                          style={{height: 80, width: 80, color: '#03426e'}}
-                        />
-                      )}
-                    </View>
-                    <View style={styles.cont}>
-                      <Text style={styles.result}>
-                        Drug Manufacturer:
-                        <Text style={styles.color}>
-                          {' '}
-                          {drugInfo.manufcturer_name}
-                        </Text>
-                      </Text>
-                    </View>
-                    <View style={styles.cont}>
-                      <Text style={styles.result}>
-                        Drug Status:
-                        <Text style={styles.color}>
-                          {' '}
-                          {!drugInfo.status ? 'Good' : 'Bad'}
-                        </Text>
-                      </Text>
-                    </View>
-                    <View style={styles.cont}>
-                      <Text style={styles.result}>
-                        Drug Name:{' '}
-                        <Text style={styles.color}>
-                          {' '}
-                          {drugInfo.drug_brand_name}
-                        </Text>
-                      </Text>
-                    </View>
-                    <View style={styles.cont}>
-                      <Text style={styles.result}>
-                        Generic Name:{' '}
-                        <Text style={styles.color}>
-                          {' '}
-                          {drugInfo.generic_name}
-                        </Text>{' '}
-                      </Text>
-                    </View>
-                    <View style={styles.cont}>
-                      <Text style={styles.result}>
-                        Date Manufactured:
-                        <Text style={styles.color}>
-                          {' '}
-                          {drugInfo.date_manufacture}
-                        </Text>
-                      </Text>
-                    </View>
-                    <View style={styles.cont}>
-                      <Text style={styles.result}>
-                        Expiry Date:
-                        <Text style={styles.color}>
-                          {' '}
-                          {drugInfo.expiry_date}
-                        </Text>
-                      </Text>
-                    </View>
-                    {drugInfo.status ? (
-                      <View style={styles.cont}>
-                        <Text style={styles.result}>
-                          <Text style={styles.color}>Remark:</Text>{' '}
-                          {drugInfo.remark}
-                        </Text>
-                      </View>
+                    {!check ? (
+                      <Fragment>
+                        {!enable ? (
+                          <Fragment>
+                            <View style={styles.img}>
+                              {!drugInfo.status ? (
+                                <Image
+                                  source={require('../asset/success-icon-10.png')}
+                                  style={{
+                                    height: 80,
+                                    width: 80,
+                                    color: '#03426e',
+                                  }}
+                                />
+                              ) : (
+                                <Image
+                                  source={require('../asset/error-icon.png')}
+                                  style={{
+                                    height: 80,
+                                    width: 80,
+                                    color: '#03426e',
+                                  }}
+                                />
+                              )}
+                            </View>
+                            <View style={styles.cont}>
+                              <Text style={styles.result}>
+                                Drug Manufacturer:
+                                <Text style={styles.color}>
+                                  {drugInfo.manufacturer_name}
+                                </Text>
+                              </Text>
+                            </View>
+                            <View style={styles.cont}>
+                              <Text style={styles.result}>
+                                Drug Status:
+                                <Text style={styles.color}>
+                                  {!drugInfo.status ? 'Good' : 'Bad'}
+                                </Text>
+                              </Text>
+                            </View>
+                            <View style={styles.cont}>
+                              <Text style={styles.result}>
+                                Drug Name:
+                                <Text style={styles.color}>
+                                  {drugInfo.drug_brand_name}
+                                </Text>
+                              </Text>
+                            </View>
+                            <View style={styles.cont}>
+                              <Text style={styles.result}>
+                                Generic Name:
+                                <Text style={styles.color}>
+                                  {drugInfo.generic_name}
+                                </Text>
+                              </Text>
+                            </View>
+                            <View style={styles.cont}>
+                              <Text style={styles.result}>
+                                Date Manufactured:
+                                <Text style={styles.color}>
+                                  {drugInfo.date_manufacture}
+                                </Text>
+                              </Text>
+                            </View>
+                            <View style={styles.cont}>
+                              <Text style={styles.result}>
+                                Expiry Date:
+                                <Text style={styles.color}>
+                                  {drugInfo.expiry_date}
+                                </Text>
+                              </Text>
+                            </View>
+                            {drugInfo.status ? (
+                              <View style={styles.cont}>
+                                <Text style={styles.result}>
+                                  Remark:
+                                  <Text style={{color: 'red'}}>
+                                    {drugInfo.remark}
+                                  </Text>
+                                </Text>
+                              </View>
+                            ) : (
+                              <Text />
+                            )}
+                            <View style={styles.cont1}>
+                              <Button
+                                icon="camera"
+                                mode="contained"
+                                buttonColor="#03426e"
+                                onPress={this.scanAgain}>
+                                Scan QR Code
+                              </Button>
+                              {!drugInfo.status ? (
+                                <Button
+                                  icon="cards-diamond-outline"
+                                  mode="contained"
+                                  buttonColor="#03426e"
+                                  onPress={() => {
+                                    this.setState(p => ({...p, enable: true}));
+                                  }}>
+                                  Claim Tokens
+                                </Button>
+                              ) : null}
+                            </View>
+                          </Fragment>
+                        ) : (
+                          <View style={{marginTop: 60}}>
+                            <TextInput
+                              label="Email"
+                              type="disabled"
+                              value={email}
+                              onChangeText={_text => {
+                                this.setState(p => ({...p, email: _text}));
+                              }}
+                            />
+                            <View style={{...styles.cont1, marginTop: 60}}>
+                              <Button
+                                icon="camera"
+                                mode="contained"
+                                buttonColor="#03426e"
+                                onPress={this.scanAgain}>
+                                Scan QR code again
+                              </Button>
+                              <Button
+                                icon="cards-diamond-outline"
+                                mode="contained"
+                                buttonColor="#03426e"
+                                disabled={load}
+                                onPress={() => {
+                                  this.submitClaim();
+                                }}>
+                                {load ? 'Claiming' : 'Claim'}
+                              </Button>
+                            </View>
+                          </View>
+                        )}
+                      </Fragment>
                     ) : (
-                      <Text />
+                      <View
+                        style={{
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
+                        <Text
+                          variant="displayLarge"
+                          style={{color: 'red', fontSize: 20, marginTop: 62}}>
+                          Drug information not found.
+                        </Text>
+                        <View style={{marginTop: 90}}>
+                          <Button
+                            icon="camera"
+                            mode="contained"
+                            buttonColor="#03426e"
+                            onPress={this.scanAgain}>
+                            Scan QR Code
+                          </Button>
+                        </View>
+                      </View>
                     )}
-                    <View style={styles.cont1}>
-                      <Button
-                        icon="camera"
-                        mode="contained"
-                        buttonColor="#03426e"
-                        onPress={this.scanAgain}>
-                        Scan QR Code
-                      </Button>
-                      <Button
-                        icon="cards-diamond-outline"
-                        mode="contained"
-                        buttonColor="#03426e"
-                        onPress={() => console.log('Pressed')}>
-                        Claim Tokens
-                      </Button>
-                    </View>
                   </Fragment>
                 )}
               </View>

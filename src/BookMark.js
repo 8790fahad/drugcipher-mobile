@@ -26,7 +26,7 @@ export default function BookMark() {
   }, [getScanHistory]);
   return (
     <View style={styles.scrollViewStyle}>
-      <Text style={styles.textTitle3}>DrugCipher</Text>
+      <Text style={styles.textTitle3}>DrugCipher Bookmark</Text>
       <View style={styles.cardVew3}>
         <SafeAreaView style={styles.container}>
           <ScrollView style={styles.scrollView}>

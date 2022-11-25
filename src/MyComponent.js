@@ -1,11 +1,9 @@
 import * as React from 'react';
-import {BottomNavigation, Text} from 'react-native-paper';
+import {BottomNavigation} from 'react-native-paper';
 import BookMark from './BookMark';
 import History from './History';
 import Scan from './QrCodeScanner';
-
-const AlbumsRoute = () => <Text>Albums</Text>;
-
+import SettingsScreen from './SettingsScreen';
 
 const MyComponent = () => {
   const [index, setIndex] = React.useState(0);
@@ -40,7 +38,7 @@ const MyComponent = () => {
     scan: Scan,
     history: History,
     bookmark: BookMark,
-    settings: AlbumsRoute,
+    settings: SettingsScreen,
   });
 
   return (

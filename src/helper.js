@@ -1,7 +1,8 @@
 const serverUrl =
-  process.env.NODE_ENV === 'development'
-    ? 'http://192.168.0.175:34561'
-    : 'https://yge.wvi.mybluehost.me/test/drug-cipher-server';
+  // process.env.NODE_ENV === 'development'
+  //   ? 'http://192.168.43.244:34561'
+  //   : 
+    'https://yge.wvi.mybluehost.me/test/drug-cipher-server';
 export const apiURL = serverUrl + '/api';
 
 export const _postApi = (url, data = {}, success = f => f, error = f => f) => {
